@@ -4,6 +4,7 @@ include ../../mixins/search.pug
 include ../../mixins/pagination.pug
 include ../../mixins/form_change_multi.pug
 include ../../mixins/alert.pug
+include ../../mixins/sort.pug
 
 
 block main
@@ -11,21 +12,26 @@ block main
 	h1 Danh sách sản phẩm
 	.card.mb-3
 		.card-header Bộ lọc và Tìm kiếm
-		.card-body
-			.row
+			.row 
 				.col-6
 					+filter-status(filterStatus)
 				.col-6
 					+search(keyword)
-			+form-change-multi(`${prefixAdmin}/product/change-multi?_method=PATCH`)
-			.row
+				
+		.card-body
+			.row 
+				.col-4 
+					+sort()
+
+			.row 
 				.col-8
+					+form-change-multi(`${prefixAdmin}/product/change-multi?_method=PATCH`)
 				.col-4
 					a(
 						href=`${prefixAdmin}/product/create`
 						class="btn btn-outline-success"
 
-					) Thêm mới			
+					) Thêm mới
 		table(
 			class="table table-hover table-sm"
 			checkbox-multi
@@ -39,7 +45,8 @@ block main
 					th Tiêu đề
 					th Giá
 					th Trạng thái
-					th Hành động
+					th Hành động	
+
 			tbody
 				each item, index in product
 					tr
