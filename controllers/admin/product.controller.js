@@ -4,6 +4,10 @@ const paginationHelper = require("../../helpers/pagination");
 const searchHelper = require("../../helpers/search");
 
 const systemConfig = require("../../config/system");
+
+const ProductCategory = require("../../models/product-category.model");
+
+const createTreeHelper = require("../../helpers/createTree");
 module.exports.index = async (req, res) => {
 
 	// Đoạn bộ lọc
@@ -38,10 +42,10 @@ module.exports.index = async (req, res) => {
 
 	// console.log(objectPagination.currentPage);
 	// End 
-	
+
 	// Sort
 	let sort = {};
-	if(req.query.sortKey && req.query.sortValue) {
+	if (req.query.sortKey && req.query.sortValue) {
 		sort[req.query.sortKey] = req.query.sortValue;
 	} else {
 		sort.position = "desc";
@@ -128,8 +132,18 @@ module.exports.deleteItem = async (req, res) => {
 
 //[GET]
 module.exports.create = async (req, res) => {
+
+	let find = {
+		deleted: false
+	};
+
+	const category = await ProductCategory.find(find);
+
+	const newCategory = createTreeHelper.tree(category);
+
 	res.render("admin/pages/product/create", {
 		pageTitle: "Thêm mới sản phẩm",
+		category: newCategory
 	});
 }
 
@@ -172,9 +186,17 @@ module.exports.edit = async (req, res) => {
 
 		const product = await Product.findOne(find);
 
+
+		const category = await ProductCategory.find({
+			deleted: false
+		});
+
+		const newCategory = createTreeHelper.tree(category);
+
 		res.render("admin/pages/product/edit", {
 			pageTitle: "Chỉnh sửa sản phẩm",
-			product: product
+			product: product,
+			category: newCategory
 		});
 	} catch (error) {
 		res.redirect(`${systemConfig.prefixAdmin}/products`);
@@ -205,7 +227,7 @@ module.exports.editPatch = async (req, res) => {
 	} catch (error) {
 		req.flash("error", "Cập nhật thất bại!");
 	}
-	
+
 	res.redirect(`${systemConfig.prefixAdmin}/product`);
 
 }
@@ -225,7 +247,7 @@ module.exports.detail = async (req, res) => {
 			pageTitle: product.title,
 			product: product
 		});
-	} catch (error) { 
+	} catch (error) {
 		res.redirect(`${systemConfig.prefixAdmin}/products`);
 	}
 };

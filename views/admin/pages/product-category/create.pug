@@ -3,13 +3,12 @@ include ../../mixins/alert.pug
 include ../../mixins/select-tree.pug
 
 block main
-  +alert-success(5000)
+  h1(class="mb-4") Thêm mới danh mục sản phẩm
+
   +alert-error(5000)
-  h1(class="mb-4") Chỉnh sửa  sản phẩm
 
   form(
-    action=`${prefixAdmin}/product/edit/${product.id}?_method=PATCH`
-    id="form-edit-product"
+    action=`${prefixAdmin}/product-category/create`
     method="POST"
     enctype="multipart/form-data"
   )
@@ -21,18 +20,23 @@ block main
         id="title"
         name="title"
         required
-        value=product.title
       )
-    div(class="form-group")
-      label(for="product_category_id") Danh mục
-      select(
-        name="product_category_id"
-        id="product_category_id"
-        class="form-control"
-      )
-        option(value="") -- Chọn danh mục --
-        if(category)
-          +select-tree(category, 1, product.product_category_id)
+    //- div(class="form-group")
+    //-   label(for="parent_id") Danh mục cha
+    //-   input(
+    //-     type="text"
+    //-     class="form-control"
+    //-     id="parent_id"
+    //-     name="parent_id"
+    //-   )
+    select(  
+      name="parent_id"
+      id="parent_id"
+      class="form-control"
+    )
+      option(value="") -- Chọn danh mục cha --
+      if(records)
+        +select-tree(records)
     div(class="form-group")
       label(for="desc") Mô tả
       textarea(
@@ -40,39 +44,9 @@ block main
         id="desc"
         name="description"
         rows="5"
-        value=product.description
-      ) #{product.description}
-    div(class="form-group")
-      label(for="price") Giá
-      input(
-        type="number"
-        class="form-control"
-        id="price"
-        name="price"
-        min="0"
-        value=product.price
       )
-    div(class="form-group")
-      label(for="discount") % Giảm giá
-      input(
-        type="number"
-        class="form-control"
-        id="discount"
-        name="discountPercentage"
-        min="0"
-        value=product.discountPercentage
-      )
-    div(class="form-group")
-      label(for="stock") Số lượng
-      input(
-        type="number"
-        class="form-control"
-        id="stock"
-        name="stock"
-        min="0"
-        value=product.stock
-      )
-    div(class="form-group"
+    div(
+      class="form-group"
       upload-image
     )
       label(for="thumbnail") Ảnh
@@ -85,7 +59,7 @@ block main
         upload-image-input
       )
       img(
-        src=product.thumbnail
+        src=""
         upload-image-preview
         class="image-preview"
       )
@@ -98,7 +72,6 @@ block main
         name="position"
         placeholder="Tự động tăng"
         min="1"
-        value=product.position
       )
     div(class="form-group form-check form-check-inline")
       input(
@@ -107,7 +80,7 @@ block main
         id="statusActive"
         name="status"
         value="active"
-        checked=product.status == "active" ? true : false
+        checked
       )
       label(for="statusActive" class="form-check-label") Hoạt động
     div(class="form-group form-check form-check-inline")
@@ -117,13 +90,10 @@ block main
         id="statusInActive"
         name="status"
         value="inactive"
-        checked=product.status == "inactive" ? true : false
       )
       label(for="statusInActive" class="form-check-label") Dừng hoạt động
     div(class="form-group")
       button(
         type="submit"
         class="btn btn-primary"
-      ) Cập nhật
-
-  script(src="/admin/js/product.js")
+      ) Tạo mới

@@ -1,4 +1,5 @@
 const express = require('express');
+var path = require('path');
 const methodOverride = require('method-override');
 const flash = require('express-flash');
 const multer  = require('multer');
@@ -32,6 +33,10 @@ app.set('view engine', 'pug');
 app.use(cookieParser('ghjkkj'));
 app.use(session({ cookie: { maxAge: 60000 }}));
 app.use(flash());
+
+//TinyMCE
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+
 
 
 // App Locals Variables
