@@ -8,6 +8,10 @@ const app = express();
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+
+const moment = require("moment");
+
+app.locals.moment = moment;
 require('dotenv').config();
 
 const port = process.env.PORT;
